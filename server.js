@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY, name TEXT NOT NULL, ema
 CREATE TABLE IF NOT EXISTS resumes(id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL, filename TEXT NOT NULL, extracted_text TEXT NOT NULL, skills_json TEXT NOT NULL, created_at TEXT DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY(user_id) REFERENCES users(id));
 `);
 app.use(express.json({limit:"2mb"}));
-app.use(express.static(path.join(__dirname,"public")));
+app.use(express.static(path.join(__dirname, "dist")));
 
 const SKILLS = ["Python","Java","JavaScript","TypeScript","HTML","CSS","React","Node.js","SQL","Excel","Power BI","Tableau","Machine Learning","Data Analysis","C","C++","AWS","Azure","Docker","Git","Django","Flask","Linux","Statistics","Communication","Problem Solving","Networking","MongoDB","PostgreSQL","Kubernetes","REST API"];
 const JOBS = [
@@ -105,6 +105,8 @@ app.get("/api/roadmap",auth,(req,res)=>{
  ];
  res.json({missingSkills:missing,roadmap});
 });
-app.get("*",(req,res)=>res.sendFile(path.join(__dirname,"public","index.html")));
+app.get("*",(req,res)=>{
+ res.sendFile(path.join(__dirname, "dist", "index.html"));
+});
 app.use((err,req,res,next)=>res.status(err instanceof multer.MulterError?413:400).json({error:err.message||"Request failed."}));
 app.listen(PORT,()=>console.log(`CareerPilot running on port ${PORT}`));
